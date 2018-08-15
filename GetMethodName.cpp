@@ -14,6 +14,11 @@ namespace fs = boost::filesystem;
 
 void getMethodName(string filename) {
   vector<string> ns;
+  vector<string> tmpname;
+  vector<string> tmpclass;
+  ns.reserve(5);
+  tmpname.reserve(5);
+  tmpclass.reserve(5);
   string str;
   int counter = 0;
 
@@ -35,23 +40,23 @@ void getMethodName(string filename) {
 
     if(str.find("{") != string::npos) {
       counter++;
+      cout << "Incremented. Counter: " << counter << endl;
     }
     if(str.find("}") != string::npos) {
       counter--;
+      cout << "Decremented. Counter: " << counter << endl;
       if(counter < (int)ns.size()) {
         ns.pop_back();
       }
     }
 
     if(str.find("namespace") == 0) {
-      vector<string> v;
-      boost::algorithm::split(v, str, boost::is_any_of(" "));
-      cout << v[1] << endl;
+      boost::algorithm::split(tmpname, str, boost::is_any_of(" "));
       if(counter > 0) {
-        cout << v[1] << endl;
-        ns.push_back(v[1]);
+        cout << tmpname[1] << endl;
+        ns.push_back(tmpname[1]);
       }
-      v.clear();
+      tmpname.clear();
     }
 
     if(str.find("class") == string::npos) {
@@ -59,29 +64,29 @@ void getMethodName(string filename) {
       for(int i = 0; i < (int)ns.size(); ++i) {
         name += ns[i] + "::";
       }
-
-      vector<string> v;
-      boost::algorithm::split(v, str, boost::is_any_of(" "));
-      name += v[1];
+      boost::algorithm::split(tmpclass, str, boost::is_any_of(" "));
+      name += tmpclass[1];
       ofs << name << "\n" << endl;
-      v.clear();
+      tmpclass.clear();
     }
   } // end while
 
   ifs.close();
   ofs.close();
   ns.clear();
+  tmpname.clear();
+  tmpclass.clear();
 } // end getMethodName
 
 int main(int argc, char* argv[]) {
-  const fs::path path(argv[1]);
-  BOOST_FOREACH(const fs::path& p, std::make_pair(fs::recursive_directory_iterator(path), fs::recursive_directory_iterator())) {
-    if (!fs::is_directory(p)) {
-      // std::cout << p << std::endl;
-      string fname = p.generic_string();
-      getMethodName(fname);
-    }
-  }
-  // cout << argv[1] << endl;
-  // getMethodName(argv[1]);
+  // const fs::path path(argv[1]);
+  // BOOST_FOREACH(const fs::path& p, std::make_pair(fs::recursive_directory_iterator(path), fs::recursive_directory_iterator())) {
+  //   if (!fs::is_directory(p)) {
+  //     // std::cout << p << std::endl;
+  //     string fname = p.generic_string();
+  //     getMethodName(fname);
+  //   }
+  // }
+  cout << argv[1] << endl;
+  getMethodName(argv[1]);
 } // end main
