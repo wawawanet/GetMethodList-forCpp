@@ -20,6 +20,7 @@ void getMethodName(string filename) {
   tmpname.reserve(5);
   tmpclass.reserve(5);
   string str;
+  string name;
   int counter = 0;
 
   // Open Files
@@ -57,10 +58,10 @@ void getMethodName(string filename) {
         ns.push_back(tmpname[1]);
       }
       tmpname.clear();
+      vector<string>().swap(tmpname);
     }
 
     if(str.find("class") == string::npos) {
-      string name;
       for(int i = 0; i < (int)ns.size(); ++i) {
         name += ns[i] + "::";
       }
@@ -68,6 +69,8 @@ void getMethodName(string filename) {
       name += tmpclass[1];
       ofs << name << "\n" << endl;
       tmpclass.clear();
+      vector<string>().swap(tmpname);
+      name = "";
     }
   } // end while
 
@@ -76,6 +79,10 @@ void getMethodName(string filename) {
   ns.clear();
   tmpname.clear();
   tmpclass.clear();
+
+  vector<string>().swap(ns);
+  vector<string>().swap(tmpname);
+  vector<string>().swap(tmpclass);
 } // end getMethodName
 
 int main(int argc, char* argv[]) {
